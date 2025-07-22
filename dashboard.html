@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - TriveHer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Navigation (copied from index.html) -->
+    <nav
+      class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-lg z-50 py-4"
+    >
+      <div
+        class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center"
+      >
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="text-3xl font-bold">
+            <span class="gradient-text">&lt;/&gt;</span>
+            <span>Trive<span class="text-purple-600">Her</span></span>
+          </div>
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="#" class="nav-link">Courses</a>
+          <a href="#" class="nav-link">Mentors</a>
+          <a href="#community" class="nav-link">Community</a>
+          <a href="#" class="nav-link relative">
+            Resources
+            <div class="notification-badge" id="notificationBadge">1</div>
+          </a>
+        </div>
+        <div class="flex items-center gap-4">
+          <span id="userGreeting" class="text-purple-700 font-semibold"></span>
+          <button
+            id="logoutBtn"
+            class="px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-full hover:bg-gray-300 transition-all"
+          >
+            Logout
+          </button>
+          <button class="md:hidden text-gray-700 focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="pt-32 pb-20 container mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Announcements Section -->
+      <section class="mb-16" id="announcements">
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+          <h2 class="text-2xl font-bold mb-4 gradient-text">Announcements</h2>
+          <ul class="list-disc pl-6 text-gray-700">
+            <li>
+              Welcome to your dashboard! Stay tuned for upcoming events and
+              updates.
+            </li>
+            <li>New course: "Intro to Python" launching next week!</li>
+            <li>
+              Community challenge: Build a personal portfolio website. Submit by
+              end of month.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Community Section (copied from homepage) -->
+      <section class="py-12 bg-gray-50/50 relative" id="community">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">
+              Community
+            </h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              Become part of an empowering community of girls who code, share
+              projects, and grow together.
+            </p>
+          </div>
+          <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div class="bg-gray-100 rounded-lg p-4 mb-6">
+              <div class="text-sm text-gray-500 mb-1">
+                Next community event:
+              </div>
+              <div class="font-medium">Code & Coffee - Virtual Meetup</div>
+              <div class="text-sm text-purple-600">Saturday, 10:00 AM EST</div>
+            </div>
+            <a
+              href="#"
+              class="text-purple-600 font-medium flex items-center gap-2 hover:text-purple-700"
+              id="joinCommunityBtn"
+            >
+              <span>Join now</span>
+              <i class="fas fa-arrow-right text-sm"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // User greeting and logout logic (from script.js)
+      function parseJwt(token) {
+        try {
+          const base64Url = token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split("")
+              .map(function (c) {
+                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+              })
+              .join("")
+          );
+          return JSON.parse(jsonPayload);
+        } catch (e) {
+          return null;
+        }
+      }
+      function updateAuthUI() {
+        const token = localStorage.getItem("thriveher_token");
+        const userGreeting = document.getElementById("userGreeting");
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (token) {
+          let user = JSON.parse(
+            localStorage.getItem("thriveher_user") || "null"
+          );
+          if (!user) {
+            const payload = parseJwt(token);
+            user = payload
+              ? { name: payload.name || payload.email || "User" }
+              : { name: "User" };
+          }
+          userGreeting.textContent = `Hi, ${
+            user.name || user.email || "User"
+          }!`;
+          userGreeting.classList.remove("hidden");
+          logoutBtn.classList.remove("hidden");
+        } else {
+          window.location.href = "index.html"; // redirect if not logged in
+        }
+      }
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function () {
+          localStorage.removeItem("thriveher_token");
+          localStorage.removeItem("thriveher_user");
+          window.location.href = "index.html";
+        });
+      document.addEventListener("DOMContentLoaded", updateAuthUI);
+    </script>
+  </body>
+</html>

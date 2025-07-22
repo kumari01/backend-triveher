@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TriveHer - Girls Who Code</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Spline for 3D elements -->
+    <script
+      type="module"
+      src="https://unpkg.com/@splinetool/viewer@0.9.474/build/spline-viewer.js"
+    ></script>
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Three.js for 3D effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.154.0/three.min.js"></script>
+
+    <!-- Poppins Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-2 z-[9999] px-8 py-4 rounded-2xl shadow-2xl text-white text-base font-semibold border-2 border-purple-300 bg-purple-600 opacity-0 pointer-events-none transition-all duration-300"></div>
+    <!-- Navigation -->
+    <nav
+      class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-lg z-50 py-4"
+    >
+      <div
+        class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center"
+      >
+        <a href="javascript:void(0)" class="flex items-center gap-2">
+          <div class="text-3xl font-bold">
+            <span class="gradient-text">&lt;/&gt;</span>
+            <span>Trive<span class="text-purple-600">Her</span></span>
+          </div>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8">
+          <a href="javascript:void(0)" class="nav-link">Home</a>
+          <a href="javascript:void(0)" class="nav-link">Courses</a>
+          <a href="javascript:void(0)" class="nav-link">Mentors</a>
+          <a href="javascript:void(0)" class="nav-link">Community</a>
+          <a href="javascript:void(0)" class="nav-link relative">
+            Resources
+            <div class="notification-badge" id="notificationBadge">1</div>
+          </a>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button
+            class="hidden sm:inline-block px-4 py-2 border-2 border-purple-500 text-purple-600 font-medium rounded-full hover:bg-purple-50 transition-all"
+            id="loginBtn"
+          >
+            Log In
+          </button>
+          <button
+            class="px-4 py-2 bg-purple-600 text-white font-medium rounded-full hover:bg-purple-500 transition-all"
+            id="signupBtn"
+          >
+            Sign Up
+          </button>
+          <span
+            id="userGreeting"
+            class="hidden text-purple-700 font-semibold"
+          ></span>
+          <button
+            id="logoutBtn"
+            class="hidden px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-full hover:bg-gray-300 transition-all"
+          >
+            Logout
+          </button>
+          <button class="md:hidden text-gray-700 focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 min-h-screen relative overflow-hidden">
+      <div
+        class="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center relative z-10"
+      >
+        <div class="md:w-1/2 hero-content">
+          <!-- <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-16 gradient-text leading-[1.3] overflow-visible">
+          Empowering Girls Through Code
+        </h1> -->
+          <h1 class="hero-heading gradient-text">
+            Empowering Girls Through Code
+          </h1>
+
+          <p class="text-xl md:text-2xl pink-text font-light mb-10">
+            Unlock your potential. Build unshakable confidence. Code the future
+            you deserve.
+          </p>
+          <button class="btn-primary text-lg flex items-center gap-2">
+            <span>Get Started</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- 3D Animation Container -->
+        <div class="scene-container">
+          <!-- 3D elements will be rendered here by Three.js -->
+
+          <!-- Placeholder for 3D content -->
+          <div class="relative w-full h-full"></div>
+        </div>
+      </div>
+
+      <!-- Background dots -->
+      <div class="bg-dots absolute inset-0 z-0"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-gray-50/50 relative">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">
+            Discover Your Coding Journey
+          </h2>
+          <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+            Explore our interactive courses designed specifically for girls to
+            learn, create, and innovate in the world of technology.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Course Card 1 -->
+          <div class="feature-card p-8">
+            <div class="feature-icon">
+              <i class="fas fa-code"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Our Courses</h3>
+            <p class="text-gray-600 mb-6">
+              Interactive lessons that teach coding fundamentals through
+              creative projects and real-world applications.
+            </p>
+            <div class="flex gap-3 mb-6">
+              <span
+                class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm"
+                >HTML</span
+              >
+              <span
+                class="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm"
+                >CSS</span
+              >
+              <span
+                class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm"
+                >JavaScript</span
+              >
+            </div>
+            <a
+              href="javascript:void(0)"
+              class="text-purple-600 font-medium flex items-center gap-2 hover:text-purple-700"
+            >
+              <span>Explore courses</span>
+              <i class="fas fa-arrow-right text-sm"></i>
+            </a>
+          </div>
+
+          <!-- Course Card 2 -->
+          <div class="feature-card p-8">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Meet Mentors</h3>
+            <p class="text-gray-600 mb-6">
+              Connect with women in tech who will guide and inspire you through
+              your coding journey.
+            </p>
+            <div class="flex -space-x-4 mb-6">
+              <img
+                src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083377_960_720.jpg"
+                class="w-12 h-12 rounded-full border-2 border-white"
+                alt="Mentor"
+              />
+              <!-- <img src="https://cdn.pixabay.com/photo/2018/01/15/07/52/woman-3083381_960_720.jpg" class="w-12 h-12 rounded-full border-2 border-white" alt="Mentor"> -->
+              <img
+                src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083376_960_720.jpg"
+                class="w-12 h-12 rounded-full border-2 border-white"
+                alt="Mentor"
+              />
+              <div
+                class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-xs border-2 border-white"
+              >
+                +2
+              </div>
+            </div>
+            <a
+              href="javascript:void(0)"
+              class="text-purple-600 font-medium flex items-center gap-2 hover:text-purple-700"
+            >
+              <span>Meet the team</span>
+              <i class="fas fa-arrow-right text-sm"></i>
+            </a>
+          </div>
+
+          <!-- Course Card 3 -->
+          <div class="feature-card p-8">
+            <div class="feature-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Join Community</h3>
+            <p class="text-gray-600 mb-6">
+              Become part of an empowering community of girls who code, share
+              projects, and grow together.
+            </p>
+            <div class="bg-gray-100 rounded-lg p-4 mb-6">
+              <div class="text-sm text-gray-500 mb-1">
+                Next community event:
+              </div>
+              <div class="font-medium">Code & Coffee - Virtual Meetup</div>
+              <div class="text-sm text-purple-600">Saturday, 10:00 AM EST</div>
+            </div>
+            <a
+              href="javascript:void(0)"
+              class="text-purple-600 font-medium flex items-center gap-2 hover:text-purple-700"
+              id="joinCommunityBtn"
+            >
+              <span>Join now</span>
+              <i class="fas fa-arrow-right text-sm"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Background elements -->
+      <div
+        class="absolute top-40 left-10 w-20 h-20 bg-purple-400/10 rounded-full blur-3xl"
+      ></div>
+      <div
+        class="absolute bottom-20 right-20 w-40 h-40 bg-pink-400/10 rounded-full blur-3xl"
+      ></div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">
+            Success Stories
+          </h2>
+          <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+            Hear from girls who transformed their passion into skills and
+            confidence.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <div class="flex gap-4 items-center mb-6">
+              <img
+                src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383_960_720.jpg"
+                alt="Student"
+                class="w-16 h-16 rounded-full object-cover"
+              />
+              <div>
+                <h4 class="font-bold">Maya Johnson</h4>
+                <p class="text-sm text-gray-500">Web Developer, 16</p>
+              </div>
+            </div>
+            <p class="text-gray-600">
+              "TriveHer gave me the confidence to pursue my passion for coding.
+              Now I'm building websites and even won my school's science fair
+              with my app!"
+            </p>
+            <div class="mt-6 flex">
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <div class="flex gap-4 items-center mb-6">
+              <img
+                src="https://cdn.pixabay.com/photo/2020/08/21/08/33/student-5505413_960_720.png"
+                alt="Student"
+                class="w-16 h-16 rounded-full object-cover"
+              />
+              <div>
+                <h4 class="font-bold">Zoe Garcia</h4>
+                <p class="text-sm text-gray-500">Game Developer, 15</p>
+              </div>
+            </div>
+            <p class="text-gray-600">
+              "I always loved gaming but never thought I could create my own.
+              The mentors at TriveHer helped me build my first game and now I'm
+              working on a mobile app!"
+            </p>
+            <div class="mt-6 flex">
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+            </div>
+          </div>
+
+          <div
+            class="bg-white p-8 rounded-2xl shadow-lg md:col-span-2 lg:col-span-1"
+          >
+            <div class="flex gap-4 items-center mb-6">
+              <img
+                src="https://cdn.pixabay.com/photo/2021/09/24/02/48/girl-6651214_960_720.jpg"
+                alt="Student"
+                class="w-16 h-16 rounded-full object-cover"
+              />
+              <div>
+                <h4 class="font-bold">Aisha Patel</h4>
+                <p class="text-sm text-gray-500">AI Enthusiast, 17</p>
+              </div>
+            </div>
+            <p class="text-gray-600">
+              "The Python course at TriveHer opened my eyes to the world of AI.
+              I'm now working with a team on a machine learning project that
+              helps identify plant diseases!"
+            </p>
+            <div class="mt-6 flex">
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section
+      class="py-20 bg-gradient-to-r from-purple-50 to-pink-50 relative overflow-hidden"
+    >
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div
+          class="bg-white rounded-3xl p-10 md:p-16 shadow-xl relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 right-0 w-64 h-64 bg-purple-100 rounded-full -translate-y-1/2 translate-x-1/4"
+          ></div>
+          <div
+            class="absolute bottom-0 left-0 w-40 h-40 bg-pink-100 rounded-full translate-y-1/2 -translate-x-1/4"
+          ></div>
+
+          <div class="text-center max-w-3xl mx-auto relative">
+            <h2
+              class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 gradient-text"
+            >
+              Ready to Start Your Coding Journey?
+            </h2>
+            <p class="text-lg text-gray-600 mb-10">
+              Join TriveHer today and discover the exciting world of coding with
+              a supportive community of girls who share your passion.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                class="btn-primary text-lg flex items-center justify-center gap-2 min-w-[200px]"
+              >
+                <span>Start Learning</span>
+                <i class="fas fa-rocket"></i>
+              </button>
+              <button
+                class="px-8 py-4 bg-white border-2 border-purple-600 text-purple-600 rounded-full hover:bg-purple-50 transition-all font-medium flex items-center justify-center gap-2 min-w-[200px]"
+              >
+                <span>Watch Demo</span>
+                <i class="fas fa-play"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Background elements -->
+      <div
+        class="absolute top-1/4 left-10 text-8xl text-purple-300/20 font-bold"
+      >
+        &lt;/&gt;
+      </div>
+      <div
+        class="absolute bottom-1/4 right-10 text-9xl text-pink-300/10 font-bold"
+      >
+        {}
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 py-16">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div>
+            <a href="javascript:void(0)" class="flex items-center gap-2 mb-6">
+              <div class="text-3xl font-bold">
+                <span class="gradient-text">&lt;/&gt;</span>
+                <span>Trive<span class="text-purple-600">Her</span></span>
+              </div>
+            </a>
+            <p class="text-gray-600 mb-6">
+              Empowering girls to become the tech leaders of tomorrow through
+              accessible and engaging coding education.
+            </p>
+            <div class="flex gap-4">
+              <a
+                href="javascript:void(0)"
+                class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-purple-100 hover:text-purple-600 transition-all"
+              >
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a
+                href="javascript:void(0)"
+                class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-purple-100 hover:text-purple-600 transition-all"
+              >
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a
+                href="javascript:void(0)"
+                class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-purple-100 hover:text-purple-600 transition-all"
+              >
+                <i class="fab fa-youtube"></i>
+              </a>
+              <a
+                href="javascript:void(0)"
+                class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-purple-100 hover:text-purple-600 transition-all"
+              >
+                <i class="fab fa-discord"></i>
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-lg mb-6">Quick Links</h3>
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >About Us</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >Courses</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >Community</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >Events</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-lg mb-6">Resources</h3>
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >Blog</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >Tutorials</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >Documentation</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >Projects</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="text-gray-600 hover:text-purple-600"
+                  >FAQ</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-lg mb-6">Subscribe</h3>
+            <p class="text-gray-600 mb-4">
+              Stay updated with our latest courses and events
+            </p>
+            <form class="mb-4">
+              <div class="flex">
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  class="px-4 py-3 rounded-l-lg border-2 border-r-0 border-gray-200 focus:outline-none focus:border-purple-400 w-full"
+                />
+                <button
+                  type="submit"
+                  class="bg-purple-600 text-white px-4 py-3 rounded-r-lg hover:bg-purple-700"
+                >
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </form>
+            <p class="text-gray-500 text-sm">
+              By subscribing, you agree to our Privacy Policy
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="border-t border-gray-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center"
+        >
+          <p class="text-gray-600">
+            © 2025 TriveHer - Girls Who Code. All rights reserved.
+          </p>
+          <div class="flex gap-6 mt-4 md:mt-0">
+            <a
+              href="javascript:void(0)"
+              class="text-gray-600 hover:text-purple-600"
+              >Privacy Policy</a
+            >
+            <a
+              href="javascript:void(0)"
+              class="text-gray-600 hover:text-purple-600"
+              >Terms of Service</a
+            >
+            <a
+              href="javascript:void(0)"
+              class="text-gray-600 hover:text-purple-600"
+              >Contact Us</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Sign Up Modal -->
+    <div class="modal" id="signupModal">
+      <div class="modal-content">
+        <button class="modal-close" id="closeSignupModal">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2 class="text-2xl font-bold mb-2 gradient-text">Join TriveHer</h2>
+        <p class="text-gray-600 mb-6">Start your coding journey today!</p>
+
+        <form id="signupForm">
+          <div class="form-group">
+            <label for="name" class="block mb-2 text-gray-700">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              class="form-control"
+              placeholder="Enter your name"
+            />
+          </div>
+          <div class="form-group">
+            <label for="email" class="block mb-2 text-gray-700"
+              >Email Address</label
+            >
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password" class="block mb-2 text-gray-700"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="password"
+              class="form-control"
+              placeholder="Create a password"
+            />
+          </div>
+          <div class="form-group">
+            <label for="age" class="block mb-2 text-gray-700">Age</label>
+            <select id="age" class="form-control">
+              <option value="" disabled selected>Select your age range</option>
+              <option value="8-12">8-12 years</option>
+              <option value="13-15">13-15 years</option>
+              <option value="16-18">16-18 years</option>
+              <option value="19+">19+ years</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center">
+            Create Account
+          </button>
+        </form>
+
+        <div class="mt-6 text-center text-gray-600">
+          Already have an account?
+          <a
+            href="javascript:void(0)"
+            class="text-purple-600 font-medium"
+            id="switchToLogin"
+            >Log In</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+      <div class="modal-content">
+        <button class="modal-close" id="closeLoginModal">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2 class="text-2xl font-bold mb-2 gradient-text">Welcome Back!</h2>
+        <p class="text-gray-600 mb-6">Continue your coding journey</p>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail" class="block mb-2 text-gray-700"
+              >Email Address</label
+            >
+            <input
+              type="email"
+              id="loginEmail"
+              class="form-control"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword" class="block mb-2 text-gray-700"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="loginPassword"
+              class="form-control"
+              placeholder="Enter your password"
+            />
+          </div>
+          <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center">
+              <input type="checkbox" id="remember" class="mr-2" />
+              <label for="remember" class="text-gray-600">Remember me</label>
+            </div>
+            <a href="javascript:void(0)" id="forgotPasswordBtn" class="text-purple-600 text-sm">Forgot password?</a>
+
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center">
+            Log In
+          </button>
+        </form>
+
+        <div class="mt-6 text-center text-gray-600">
+          Don't have an account?
+          <a
+            href="javascript:void(0)"
+            class="text-purple-600 font-medium"
+            id="switchToSignup"
+            >Sign Up</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Join Modal -->
+    <div class="modal" id="communityModal">
+      <div class="modal-content">
+        <button class="modal-close" id="closeCommunityModal">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2 class="text-2xl font-bold mb-2 gradient-text">
+          Join Our Community
+        </h2>
+        <p class="text-gray-600 mb-6">Connect with fellow coders and mentors</p>
+
+        <div class="bg-gray-50 p-6 rounded-xl mb-6">
+          <h3 class="font-bold mb-2">Community Benefits:</h3>
+          <ul class="space-y-2">
+            <li class="flex items-center gap-2">
+              <i class="fas fa-check-circle text-green-500"></i>
+              <span>Weekly coding challenges</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fas fa-check-circle text-green-500"></i>
+              <span>Live mentoring sessions</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fas fa-check-circle text-green-500"></i>
+              <span>Project feedback from professionals</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fas fa-check-circle text-green-500"></i>
+              <span>Exclusive learning resources</span>
+            </li>
+          </ul>
+        </div>
+
+        <form id="communityForm">
+          <div class="form-group">
+            <label for="communityEmail" class="block mb-2 text-gray-700"
+              >Email Address</label
+            >
+            <input
+              type="email"
+              id="communityEmail"
+              class="form-control"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="form-group">
+            <label for="interest" class="block mb-2 text-gray-700"
+              >What are you interested in?</label
+            >
+            <select id="interest" class="form-control">
+              <option value="" disabled selected>
+                Choose your main interest
+              </option>
+              <option value="web">Web Development</option>
+              <option value="mobile">Mobile Apps</option>
+              <option value="game">Game Development</option>
+              <option value="ai">AI & Machine Learning</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center">
+            Join Community
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- OTP Modal -->
+    <div class="modal" id="otpModal">
+      <div class="modal-content">
+        <button class="modal-close" id="closeOtpModal">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2 class="text-2xl font-bold mb-2 gradient-text">Verify OTP</h2>
+        <p class="text-gray-600 mb-6">
+          Enter the 6-digit code sent to your email
+        </p>
+        <form id="otpForm">
+          <div class="form-group">
+            <label for="otpInput" class="block mb-2 text-gray-700">OTP</label>
+            <input
+              type="text"
+              id="otpInput"
+              class="form-control"
+              placeholder="Enter OTP"
+              maxlength="6"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center">
+            Verify
+          </button>
+        </form>
+        <div
+          class="mt-4 text-center text-gray-500 text-sm"
+          id="otpEmailInfo"
+        ></div>
+      </div>
+    </div>
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+      <div class="modal-content">
+        <button class="modal-close" id="closeForgotPasswordModal">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2 class="text-2xl font-bold mb-2 gradient-text">Forgot Password</h2>
+        <p class="text-gray-600 mb-6">Reset your password using your email address.</p>
+
+        <form id="forgotPasswordForm">
+          <div class="form-group">
+            <label for="resetEmail" class="block mb-2 text-gray-700">Email Address</label>
+            <input type="email" id="resetEmail" class="form-control" placeholder="Enter your email" required />
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center">Send OTP</button>
+        </form>
+
+        <form id="verifyResetOTPForm" class="hidden">
+          <div class="form-group">
+            <label for="resetOtp" class="block mb-2 text-gray-700">OTP</label>
+            <input type="text" id="resetOtp" class="form-control" placeholder="Enter OTP" required />
+          </div>
+          <div class="form-group">
+            <label for="resetNewPassword" class="block mb-2 text-gray-700">New Password</label>
+            <input type="password" id="resetNewPassword" class="form-control" placeholder="New Password" required />
+          </div>
+          <div class="form-group">
+            <label for="resetConfirmPassword" class="block mb-2 text-gray-700">Confirm Password</label>
+            <input type="password" id="resetConfirmPassword" class="form-control" placeholder="Confirm Password" required />
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center">Verify OTP & Reset</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ...existing code... -->
+    <script src="script.js"></script>
+  </body>
+</html>
